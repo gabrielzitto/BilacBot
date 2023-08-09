@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="https://diviengine.com/wp-content/uploads/2023/01/ChatGPT-Logooptimized-610x610.png" />
+    <title>Texto GPT</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/3.6.3/jquery.min.js"></script>
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h3 style="margin-bottom: 2rem;">BilacBot</h3>
+
+        <label for="apiKeyInput">API Key:</label>
+        <input type="text" id="apiKeyInput" class="form-control" placeholder="Insira sua API Key aqui">
+
+        <label class="mt-2" for="themeToggle">Modo Escuro:</label>
+        <input type="checkbox" id="themeToggle">
+
+        <input type="text" id="textInput" class="form-control mt-3" placeholder="Escreva seu texto aqui...">
+        
+        <div class="btn-group mt-2">
+            <button id="ampliarButton" class="btn btn-primary">Ampliar texto</button>
+            <button id="corrigirButton" class="btn btn-warning">Corrigir texto</button>
+            <button id="copiarButton" class="btn btn-secondary">Copiar texto gerado</button>
+        </div>
+        
+        <div class="mt-4" id="gptOutput">
+            <span id="loading"></span>
+        </div>
+    </div>
+
+    <script>
+        const textInput = $("#textInput");
+        const gptOutput = $("#gptOutput");
+
+        $("#ampliarButton").on("click", () => {
+            sendToGPT("amplie esse texto: " + textInput.val());
+        });
+
+        $("#corrigirButton").on("click", () => {
+            sendToGPT("corrija esse texto: " + textInput.val());
+        });
+
+        $("#copiarButton").on("click", () => {
+            const textArea = document.createElement("textarea");
+            textArea.value = gptOutput.text();
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+        });
+
+        function sendToGPT(prompt) {
+            const apiKey = $("#apiKeyInput").val();
+
+            // Mostra a mensagem de carregamento
+            $("#loading").text("Seu texto está sendo processado, aguarde por favor...");
+
+            var settings = {
+                url: "https://api.openai.com/v1/chat/completions",
+                method: "POST",
+                timeout: 0,
+                headers: {
+                    "Authorization": "Bearer " + apiKey,
+                    "Content-Type": "application/json"
+                },
+                data: JSON.stringify({
+                    model: "gpt-3.5-turbo",
+                    messages: [{
+                        "role": "user",
+                        "content": prompt
+                    }]
+                })
+            };
+
+            $.ajax(settings).done(function (response) {
+                const message = response.choices[0].message.content;
+
+                // Oculta a mensagem de carregamento e mostra a resposta da API
+                $("#loading").text("");
+                gptOutput.html(message);
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+
+                // Oculta a mensagem de carregamento e mostra o erro
+                $("#loading").text("");
+                gptOutput.html("Erro: " + jqXHR.responseJSON.error.message);
+            });
+        }
+
+        // Dark mode toggle
+        $('#themeToggle').change(function () {
+            if ($(this).prop('checked')) {
+                $('body').css('background-color', 'black');
+                $('body').css('color', 'white');
+            } else {
+                $('body').css('background-color', 'white');
+                $('body').css('color', 'black');
+            }
+        });
+
+    </script>
+</body>
+
+</html>

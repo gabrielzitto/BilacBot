@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/png" href="https://diviengine.com/wp-content/uploads/2023/01/ChatGPT-Logooptimized-610x610.png" />
+    <link rel="icon" type="image/png"
+        href="https://diviengine.com/wp-content/uploads/2023/01/ChatGPT-Logooptimized-610x610.png" />
     <title>Texto GPT</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
     <script src="https://cdn.staticfile.org/jquery/3.6.3/jquery.min.js"></script>
@@ -34,7 +35,7 @@
 
         <textarea id="textInput" class="form-control my-3" rows="10" placeholder="Escreva seu texto aqui..."></textarea>
 
-        <div class="btn-group mt-2">
+        <div class="btn-group mt-2" style="gap:5px;">
             <button id="ampliarButton" class="btn btn-primary">Ampliar texto</button>
             <button id="corrigirButton" class="btn btn-warning">Corrigir texto</button>
             <button id="converterRegiaoButton" class="btn btn-success">Converter para Região</button>
@@ -46,7 +47,12 @@
         <div class="mt-4" id="gptOutput">
             <span id="loading"></span>
         </div>
-        <div class="mt-4" id="comparisonOutput"></div>
+        <div class=" mt-4 gap-5" id="comparisonOutput" style="display: none; gap:5px">
+            <div class="w-50 p-3 border" id="originalOutput"></div>
+            <div class="w-50 p-3 border" id="correctedOutput"></div>
+        </div>
+
+
     </div>
 
     <script>
@@ -142,6 +148,10 @@
                 const correctedText = response.choices[0].message.content;
                 showTextComparison(originalText, correctedText);
                 $("#loading").text("");
+
+                // Exibir a div comparisonOutput
+                $("#comparisonOutput").css("display", "flex");
+
             }).fail(function (jqXHR, textStatus, errorThrown) {
                 $("#loading").text("");
                 gptOutput.html("Erro: " + jqXHR.responseJSON.error.message);
@@ -149,30 +159,32 @@
         }
 
         function showTextComparison(original, corrected) {
+            let originalHtml = "<strong>Original:</strong> <br>";
+            let correctedHtml = "<strong>Corrigido:</strong> <br>";
+
             let originalWords = original.split(" ");
             let correctedWords = corrected.split(" ");
-            let comparisonHtml = "<strong>Original:</strong> ";
 
             originalWords.forEach((word, index) => {
                 if (word !== correctedWords[index]) {
-                    comparisonHtml += `<span style="background-color: yellow">${word}</span> `;
+                    originalHtml += `<span style="background-color: yellow">${word}</span> `;
                 } else {
-                    comparisonHtml += word + " ";
+                    originalHtml += word + " ";
                 }
             });
-
-            comparisonHtml += "<br><strong>Corrigido:</strong> ";
 
             correctedWords.forEach((word, index) => {
                 if (word !== originalWords[index]) {
-                    comparisonHtml += `<span style="background-color: green; color: white">${word}</span> `;
+                    correctedHtml += `<span style="background-color: green; color: white">${word}</span> `;
                 } else {
-                    comparisonHtml += word + " ";
+                    correctedHtml += word + " ";
                 }
             });
 
-            $("#comparisonOutput").html(comparisonHtml);
+            $("#originalOutput").html(originalHtml);
+            $("#correctedOutput").html(correctedHtml);
         }
+
 
         // Dark mode toggle
         $('#themeToggle').change(function () {
@@ -189,4 +201,3 @@
 </body>
 
 </html>
-

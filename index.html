@@ -11,6 +11,16 @@
     <script src="https://cdn.staticfile.org/jquery/3.6.3/jquery.min.js"></script>
 </head>
 
+
+<style>
+    .custom-output {
+        background: #f7f9fc;
+        background: linear-gradient(135deg, #f7f9fc, #e6e9ef);
+        border: 2px solid #dee2e6;
+        color: #333;
+    }
+</style>
+
 <body>
     <div class="container mt-5">
         <h3 style="margin-bottom: 2rem;">BilacBot</h3>
@@ -43,10 +53,15 @@
             <button id="copiarButton" class="btn btn-secondary">Copiar texto gerado</button>
         </div>
 
-        <div class="mt-4" id="gptOutput">
+
+        <div class="mt-4 custom-output p-4 rounded-lg shadow" id="gptOutput" style="display: none;">
             <span id="loading"></span>
-            <span id="gptResult"></span>
+            <span id="gptResult" class="" style="font-size: 1.17rem;">
+            </span>
         </div>
+
+
+
 
         <div class=" mt-4 gap-5" id="comparisonOutput" style="display: none; gap:5px">
             <div class="w-50 p-3 border" id="originalOutput"></div>
@@ -60,11 +75,15 @@
 
         $("#ampliarButton").on("click", () => {
             $("#gptResult").text("");
+            $("#gptOutput").css("display", "block");
+
             sendToGPT("amplie esse texto: " + textInput.val());
         });
 
         $("#corrigirButton").on("click", () => {
             $("#gptResult").text("");
+            $("#gptOutput").css("display", "block");
+
             sendToGPT("corrija esse texto: " + textInput.val());
         });
 
@@ -79,11 +98,15 @@
 
         $("#converterRegiaoButton").on("click", () => {
             $("#gptResult").text("");
+            $("#gptOutput").css("display", "block");
+
             sendToGPT("Converta este texto para o estilo da região " + regiaoDropdown.val() + " do Brasil: " + textInput.val());
         });
 
         $("#detectarRegiaoButton").on("click", () => {
             $("#gptResult").text("");
+            $("#gptOutput").css("display", "block");
+
             sendToGPT("Qual região do Brasil esse texto corresponde: " + textInput.val());
         });
 
@@ -151,6 +174,8 @@
                 const correctedText = response.choices[0].message.content;
                 showTextComparison(originalText, correctedText);
                 $("#loading").text("");
+                $("#gptOutput").css("display", "none");
+
 
                 $("#comparisonOutput").css("display", "flex");
             }).fail(function (jqXHR, textStatus, errorThrown) {
@@ -203,11 +228,11 @@
             if (isDarkMode) {
                 $('body').css('background-color', 'black');
                 $('body').css('color', 'white');
-                $('#themeToggle').prop('checked', true); 
+                $('#themeToggle').prop('checked', true);
             } else {
                 $('body').css('background-color', 'white');
                 $('body').css('color', 'black');
-                $('#themeToggle').prop('checked', false); 
+                $('#themeToggle').prop('checked', false);
             }
         }
 
@@ -216,13 +241,13 @@
             let isDarkMode = $(this).prop('checked');
             applyDarkMode(isDarkMode);
 
-            
+
             localStorage.setItem('darkMode', isDarkMode);
         });
 
         // Ao carregar a página, verifica a preferência no localStorage
         $(document).ready(function () {
-            let isDarkMode = localStorage.getItem('darkMode') === 'true'; 
+            let isDarkMode = localStorage.getItem('darkMode') === 'true';
             applyDarkMode(isDarkMode);
         });
 

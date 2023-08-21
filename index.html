@@ -21,8 +21,10 @@
         <input type="checkbox" id="themeToggle">
 
         <!-- Dropdown para escolher a região -->
-        <label class="mt-2" for="regiaoDropdown">Escolha a região:</label>
-        <select class="form-control" id="regiaoDropdown">
+        <div>
+            <label class="mt-2" for="regiaoDropdown" style="font-size: 1.3rem;">Escolha a região:</label>
+        </div>
+        <select class="form-control" id="regiaoDropdown" style="margin-bottom: 2rem;">
             <option value="norte">Norte</option>
             <option value="nordeste">Nordeste</option>
             <option value="sudeste">Sudeste</option>
@@ -30,23 +32,20 @@
             <option value="centro-oeste">Centro-Oeste</option>
         </select>
 
-        <input type="text" id="textInput" class="form-control mt-3" placeholder="Escreva seu texto aqui...">
+        <textarea id="textInput" class="form-control my-3" rows="10" placeholder="Escreva seu texto aqui..."></textarea>
 
         <div class="btn-group mt-2">
             <button id="ampliarButton" class="btn btn-primary">Ampliar texto</button>
             <button id="corrigirButton" class="btn btn-warning">Corrigir texto</button>
-            <button id="copiarButton" class="btn btn-secondary">Copiar texto gerado</button>
             <button id="converterRegiaoButton" class="btn btn-success">Converter para Região</button>
-            <!-- Botão para detectar a região -->
             <button id="detectarRegiaoButton" class="btn btn-info">Detectar Região</button>
-            <!-- Botão para verificação gramatical -->
             <button id="verificarGramaticaButton" class="btn btn-danger">Verificação Gramatical</button>
+            <button id="copiarButton" class="btn btn-secondary">Copiar texto gerado</button>
         </div>
 
         <div class="mt-4" id="gptOutput">
             <span id="loading"></span>
         </div>
-        <!-- Div para exibir a comparação dos textos -->
         <div class="mt-4" id="comparisonOutput"></div>
     </div>
 

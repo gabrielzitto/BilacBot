@@ -21,7 +21,6 @@
         <label class="mt-2" for="themeToggle">Modo Escuro:</label>
         <input type="checkbox" id="themeToggle">
 
-        <!-- Dropdown para escolher a região -->
         <div>
             <label class="mt-2" for="regiaoDropdown" style="font-size: 1.3rem;">Escolha a região:</label>
         </div>
@@ -48,7 +47,7 @@
             <span id="loading"></span>
             <span id="gptResult"></span>
         </div>
-        
+
         <div class=" mt-4 gap-5" id="comparisonOutput" style="display: none; gap:5px">
             <div class="w-50 p-3 border" id="originalOutput"></div>
             <div class="w-50 p-3 border" id="correctedOutput"></div>
@@ -153,7 +152,6 @@
                 showTextComparison(originalText, correctedText);
                 $("#loading").text("");
 
-                // Exibir a div comparisonOutput
                 $("#comparisonOutput").css("display", "flex");
             }).fail(function (jqXHR, textStatus, errorThrown) {
                 $("#loading").text("");
@@ -199,6 +197,35 @@
                 $('body').css('color', 'black');
             }
         });
+
+        // Função para aplicar o modo escuro
+        function applyDarkMode(isDarkMode) {
+            if (isDarkMode) {
+                $('body').css('background-color', 'black');
+                $('body').css('color', 'white');
+                $('#themeToggle').prop('checked', true); 
+            } else {
+                $('body').css('background-color', 'white');
+                $('body').css('color', 'black');
+                $('#themeToggle').prop('checked', false); 
+            }
+        }
+
+        // Evento para escutar a mudança no checkbox
+        $('#themeToggle').change(function () {
+            let isDarkMode = $(this).prop('checked');
+            applyDarkMode(isDarkMode);
+
+            
+            localStorage.setItem('darkMode', isDarkMode);
+        });
+
+        // Ao carregar a página, verifica a preferência no localStorage
+        $(document).ready(function () {
+            let isDarkMode = localStorage.getItem('darkMode') === 'true'; 
+            applyDarkMode(isDarkMode);
+        });
+
 
     </script>
 </body>

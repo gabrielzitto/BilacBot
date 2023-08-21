@@ -39,17 +39,21 @@
             <button id="converterRegiaoButton" class="btn btn-success">Converter para Região</button>
             <!-- Botão para detectar a região -->
             <button id="detectarRegiaoButton" class="btn btn-info">Detectar Região</button>
+            <!-- Botão para verificação gramatical -->
+            <button id="verificarGramaticaButton" class="btn btn-danger">Verificação Gramatical</button>
         </div>
 
         <div class="mt-4" id="gptOutput">
             <span id="loading"></span>
         </div>
+        <!-- Div para exibir a comparação dos textos -->
+        <div class="mt-4" id="comparisonOutput"></div>
     </div>
 
     <script>
         const textInput = $("#textInput");
         const gptOutput = $("#gptOutput");
-        const regiaoDropdown = $("#regiaoDropdown"); // referência para o dropdown
+        const regiaoDropdown = $("#regiaoDropdown");
 
         $("#ampliarButton").on("click", () => {
             sendToGPT("amplie esse texto: " + textInput.val());
@@ -68,20 +72,23 @@
             document.body.removeChild(textArea);
         });
 
-        // Função para o botão de converter texto conforme região
         $("#converterRegiaoButton").on("click", () => {
             sendToGPT("Converta este texto para o estilo da região " + regiaoDropdown.val() + " do Brasil: " + textInput.val());
         });
 
-        // Função para o botão de detectar região
         $("#detectarRegiaoButton").on("click", () => {
             sendToGPT("Qual região do Brasil esse texto corresponde: " + textInput.val());
+        });
+
+        // Função de verificação gramatical
+        $("#verificarGramaticaButton").on("click", () => {
+            let originalText = textInput.val();
+            sendToGPTForGrammarCheck("corrija esse texto gramaticalmente: " + originalText, originalText);
         });
 
         function sendToGPT(prompt) {
             const apiKey = $("#apiKeyInput").val();
 
-            // Mostra a mensagem de carregamento
             $("#loading").text("Seu texto está sendo processado, aguarde por favor...");
 
             var settings = {
@@ -103,16 +110,69 @@
 
             $.ajax(settings).done(function (response) {
                 const message = response.choices[0].message.content;
-
-                // Oculta a mensagem de carregamento e mostra a resposta da API
                 $("#loading").text("");
                 gptOutput.html(message);
             }).fail(function (jqXHR, textStatus, errorThrown) {
-
-                // Oculta a mensagem de carregamento e mostra o erro
                 $("#loading").text("");
                 gptOutput.html("Erro: " + jqXHR.responseJSON.error.message);
             });
+        }
+
+        function sendToGPTForGrammarCheck(prompt, originalText) {
+            const apiKey = $("#apiKeyInput").val();
+            $("#loading").text("Verificando gramática, aguarde por favor...");
+
+            var settings = {
+                url: "https://api.openai.com/v1/chat/completions",
+                method: "POST",
+                timeout: 0,
+                headers: {
+                    "Authorization": "Bearer " + apiKey,
+                    "Content-Type": "application/json"
+                },
+                data: JSON.stringify({
+                    model: "gpt-3.5-turbo",
+                    messages: [{
+                        "role": "user",
+                        "content": prompt
+                    }]
+                })
+            };
+
+            $.ajax(settings).done(function (response) {
+                const correctedText = response.choices[0].message.content;
+                showTextComparison(originalText, correctedText);
+                $("#loading").text("");
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                $("#loading").text("");
+                gptOutput.html("Erro: " + jqXHR.responseJSON.error.message);
+            });
+        }
+
+        function showTextComparison(original, corrected) {
+            let originalWords = original.split(" ");
+            let correctedWords = corrected.split(" ");
+            let comparisonHtml = "<strong>Original:</strong> ";
+
+            originalWords.forEach((word, index) => {
+                if (word !== correctedWords[index]) {
+                    comparisonHtml += `<span style="background-color: yellow">${word}</span> `;
+                } else {
+                    comparisonHtml += word + " ";
+                }
+            });
+
+            comparisonHtml += "<br><strong>Corrigido:</strong> ";
+
+            correctedWords.forEach((word, index) => {
+                if (word !== originalWords[index]) {
+                    comparisonHtml += `<span style="background-color: green; color: white">${word}</span> `;
+                } else {
+                    comparisonHtml += word + " ";
+                }
+            });
+
+            $("#comparisonOutput").html(comparisonHtml);
         }
 
         // Dark mode toggle
@@ -130,3 +190,4 @@
 </body>
 
 </html>
+

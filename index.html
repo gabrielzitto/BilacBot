@@ -26,6 +26,8 @@
             <button id="ampliarButton" class="btn btn-primary">Ampliar texto</button>
             <button id="corrigirButton" class="btn btn-warning">Corrigir texto</button>
             <button id="copiarButton" class="btn btn-secondary">Copiar texto gerado</button>
+            <!-- Novo botão para detectar região -->
+            <button id="detectarRegiaoButton" class="btn btn-info">Detectar Região</button>
         </div>
         
         <div class="mt-4" id="gptOutput">
@@ -52,6 +54,11 @@
             textArea.select();
             document.execCommand('copy');
             document.body.removeChild(textArea);
+        });
+
+        // Função para o novo botão de detectar região
+        $("#detectarRegiaoButton").on("click", () => {
+            sendToGPT("Qual região do Brasil esse texto corresponde: " + textInput.val());
         });
 
         function sendToGPT(prompt) {

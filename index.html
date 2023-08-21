@@ -46,31 +46,32 @@
 
         <div class="mt-4" id="gptOutput">
             <span id="loading"></span>
+            <span id="gptResult"></span>
         </div>
+        
         <div class=" mt-4 gap-5" id="comparisonOutput" style="display: none; gap:5px">
             <div class="w-50 p-3 border" id="originalOutput"></div>
             <div class="w-50 p-3 border" id="correctedOutput"></div>
         </div>
-
-
     </div>
 
     <script>
         const textInput = $("#textInput");
-        const gptOutput = $("#gptOutput");
         const regiaoDropdown = $("#regiaoDropdown");
 
         $("#ampliarButton").on("click", () => {
+            $("#gptResult").text("");
             sendToGPT("amplie esse texto: " + textInput.val());
         });
 
         $("#corrigirButton").on("click", () => {
+            $("#gptResult").text("");
             sendToGPT("corrija esse texto: " + textInput.val());
         });
 
         $("#copiarButton").on("click", () => {
             const textArea = document.createElement("textarea");
-            textArea.value = gptOutput.text();
+            textArea.value = $("#gptResult").text();
             document.body.appendChild(textArea);
             textArea.select();
             document.execCommand('copy');
@@ -78,15 +79,18 @@
         });
 
         $("#converterRegiaoButton").on("click", () => {
+            $("#gptResult").text("");
             sendToGPT("Converta este texto para o estilo da região " + regiaoDropdown.val() + " do Brasil: " + textInput.val());
         });
 
         $("#detectarRegiaoButton").on("click", () => {
+            $("#gptResult").text("");
             sendToGPT("Qual região do Brasil esse texto corresponde: " + textInput.val());
         });
 
         // Função de verificação gramatical
         $("#verificarGramaticaButton").on("click", () => {
+            $("#gptResult").text("");
             let originalText = textInput.val();
             sendToGPTForGrammarCheck("corrija esse texto gramaticalmente: " + originalText, originalText);
         });
@@ -116,10 +120,10 @@
             $.ajax(settings).done(function (response) {
                 const message = response.choices[0].message.content;
                 $("#loading").text("");
-                gptOutput.html(message);
+                $("#gptResult").html(message);
             }).fail(function (jqXHR, textStatus, errorThrown) {
                 $("#loading").text("");
-                gptOutput.html("Erro: " + jqXHR.responseJSON.error.message);
+                $("#gptResult").html("Erro: " + jqXHR.responseJSON.error.message);
             });
         }
 
@@ -151,10 +155,9 @@
 
                 // Exibir a div comparisonOutput
                 $("#comparisonOutput").css("display", "flex");
-
             }).fail(function (jqXHR, textStatus, errorThrown) {
                 $("#loading").text("");
-                gptOutput.html("Erro: " + jqXHR.responseJSON.error.message);
+                $("#gptResult").html("Erro: " + jqXHR.responseJSON.error.message);
             });
         }
 

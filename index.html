@@ -28,6 +28,13 @@
         <label for="apiKeyInput">API Key:</label>
         <input type="text" id="apiKeyInput" class="form-control" placeholder="Insira sua API Key aqui">
 
+        <!-- Dropdown para escolha do modelo -->
+        <label class="mt-2" for="modelDropdown" style="font-size: 1.3rem;">Escolha o modelo:</label>
+        <select class="form-control" id="modelDropdown" style="margin-bottom: 2rem;">
+            <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+            <option value="gpt-4">GPT-4</option>
+        </select>
+
         <label class="mt-2" for="themeToggle">Modo Escuro:</label>
         <input type="checkbox" id="themeToggle">
 
@@ -53,15 +60,10 @@
             <button id="copiarButton" class="btn btn-secondary">Copiar texto gerado</button>
         </div>
 
-
         <div class="mt-4 custom-output p-4 rounded-lg shadow" id="gptOutput" style="display: none;">
             <span id="loading"></span>
-            <span id="gptResult" class="" style="font-size: 1.17rem;">
-            </span>
+            <span id="gptResult" class="" style="font-size: 1.17rem;"></span>
         </div>
-
-
-
 
         <div class=" mt-4 gap-5" id="comparisonOutput" style="display: none; gap:5px">
             <div class="w-50 p-3 border" id="originalOutput"></div>
@@ -72,6 +74,8 @@
     <script>
         const textInput = $("#textInput");
         const regiaoDropdown = $("#regiaoDropdown");
+
+        const modelDropdown = $("#modelDropdown"); // Referência para o dropdown do modelo
 
         $("#ampliarButton").on("click", () => {
             $("#gptResult").text("");
@@ -119,7 +123,8 @@
 
         function sendToGPT(prompt) {
             const apiKey = $("#apiKeyInput").val();
-
+            const selectedModel = modelDropdown.val();
+            console.log(selectedModel)
             $("#loading").text("Seu texto está sendo processado, aguarde por favor...");
 
             var settings = {
@@ -131,7 +136,7 @@
                     "Content-Type": "application/json"
                 },
                 data: JSON.stringify({
-                    model: "gpt-3.5-turbo",
+                    model: selectedModel,
                     messages: [{
                         "role": "user",
                         "content": prompt
@@ -151,6 +156,8 @@
 
         function sendToGPTForGrammarCheck(prompt, originalText) {
             const apiKey = $("#apiKeyInput").val();
+            const selectedModel = modelDropdown.val();
+
             $("#loading").text("Verificando gramática, aguarde por favor...");
 
             var settings = {
@@ -162,7 +169,7 @@
                     "Content-Type": "application/json"
                 },
                 data: JSON.stringify({
-                    model: "gpt-3.5-turbo",
+                    model: selectedModel,
                     messages: [{
                         "role": "user",
                         "content": prompt
@@ -223,6 +230,10 @@
             }
         });
 
+        $("#modelDropdown").on("change", function () {
+            localStorage.setItem('selectedModel', $(this).val());
+        });
+
         // Função para aplicar o modo escuro
         function applyDarkMode(isDarkMode) {
             if (isDarkMode) {
@@ -252,6 +263,10 @@
 
         // Ao carregar a página, verifica a preferência no localStorage
         $(document).ready(function () {
+            let storedModel = localStorage.getItem('selectedModel');
+            if (storedModel) {
+                modelDropdown.val(storedModel);
+            }
             let storedApiKey = localStorage.getItem('apiKey');
             if (storedApiKey) {
                 $("#apiKeyInput").val(storedApiKey);

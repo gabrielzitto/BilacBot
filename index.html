@@ -245,8 +245,17 @@
             localStorage.setItem('darkMode', isDarkMode);
         });
 
+        $("#apiKeyInput").on("input", function () {
+            localStorage.setItem('apiKey', $(this).val());
+        });
+
+
         // Ao carregar a página, verifica a preferência no localStorage
         $(document).ready(function () {
+            let storedApiKey = localStorage.getItem('apiKey');
+            if (storedApiKey) {
+                $("#apiKeyInput").val(storedApiKey);
+            }
             let isDarkMode = localStorage.getItem('darkMode') === 'true';
             applyDarkMode(isDarkMode);
         });

@@ -13,6 +13,13 @@
 
 
 <style>
+    /* body {
+            transform: scale(0.9);
+            transform-origin: top left;
+            width: 142.86%;
+            height: 142.86%; 
+        } */
+
     .custom-output {
         background: #f7f9fc;
         background: linear-gradient(135deg, #f7f9fc, #e6e9ef);
@@ -22,17 +29,20 @@
 </style>
 
 <body>
-    <div class="container mt-5">
+    <div class="container mt-5" style="min-height: 100vh;"> 
         <h3 style="margin-bottom: 2rem;">BilacBot</h3>
 
-        <label for="apiKeyInput">API Key:</label>
-        <input type="text" id="apiKeyInput" class="form-control" placeholder="Insira sua API Key aqui">
+        <div style="display: none;">
+
+            <label for="apiKeyInput">API Key:</label>
+            <input type="text" value="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" id="apiKeyInput" class="form-control" placeholder="Insira sua API Key aqui">
+        </div>
 
         <!-- Dropdown para escolha do modelo -->
         <label class="mt-2" for="modelDropdown" style="font-size: 1.3rem;">Escolha o modelo:</label>
         <select class="form-control" id="modelDropdown" style="margin-bottom: 2rem;">
-            <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
             <option value="gpt-4">GPT-4</option>
+            <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
         </select>
 
         <label class="mt-2" for="themeToggle">Modo Escuro:</label>
@@ -49,7 +59,7 @@
             <option value="centro-oeste">Centro-Oeste</option>
         </select>
 
-        <textarea id="textInput" class="form-control my-3" rows="10" placeholder="Escreva seu texto aqui..."></textarea>
+        <textarea id="textInput" class="form-control my-3" rows="5" placeholder="Escreva seu texto aqui..."></textarea>
 
         <div class="btn-group mt-2" style="gap:5px;">
             <button id="ampliarButton" class="btn btn-primary">Ampliar texto</button>

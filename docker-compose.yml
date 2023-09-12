@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  billac:
+    restart: always
+    container_name: billac
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    expose:
+      - 5000
+    entrypoint: /app/entrypoint.sh
+
+  nginx: 
+    restart: always
+    build:
+      context: .
+      dockerfile: ./nginx/Dockerfile
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+    depends_on:
+      - billac

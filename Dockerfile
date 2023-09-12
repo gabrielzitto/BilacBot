@@ -1,0 +1,12 @@
+FROM python:3.10
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+ENV PIP_DEFAULT_TIMEOUT=100
+
+WORKDIR /app
+
+ADD . /app/
+
+RUN pip install --no-cache-dir -r requirements.txt
+

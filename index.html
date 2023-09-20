@@ -114,14 +114,14 @@
             $("#gptResult").text("");
             $("#gptOutput").css("display", "block");
 
-            sendToGPT("Converta este texto para o estilo da região " + regiaoDropdown.val() + " do Brasil: " + textInput.val());
+            sendToGPT(`Converta este texto para o estilo da região ${regiaoDropdown.val()} ${textInput.val()} do Brasil se inspirando nos seguintes exemplos de frase separados por ";" : ${getExamplesForRegion(regiaoDropdown.val())}`);
         });
 
         $("#detectarRegiaoButton").on("click", () => {
             $("#gptResult").text("");
             $("#gptOutput").css("display", "block");
 
-            sendToGPT("Qual região do Brasil esse texto corresponde: " + textInput.val());
+            sendToGPT(`Qual região do Brasil esse texto corresponde: ${textInput.val()}. Use esses exemplos de frase separados por ";" como inspiração: ${getExamplesForRegion(regiaoDropdown.val())}`);
         });
 
         // Função de verificação gramatical
@@ -255,6 +255,24 @@
                 $('body').css('color', 'black');
                 $('#themeToggle').prop('checked', false);
             }
+        }
+
+        // Função para retornar exemplos de acordo com a região
+        function getExamplesForRegion(region) {
+            const regionNormalize = region.toLowerCase().replace(" ", "-");
+
+            switch (region) {
+                case "norte":
+                    return "(Pô, véi, tu não sabe da última do meu cumpade! Ele deu um jeito de pegar uma canoa e foi pescar no igarapé mais longe; Égua! aquele curumim doido tava moscando e acabou levando farelo; Hoje eu só queria ficar de bubuia, mas esse gaiato tá me dando vontade de dar um tubão nele)"
+                case "nordeste":
+                    return "(Aquela macaxeira com cuscuz com charque tava arretado de bom, tava quase lambendo os beiço; A gente arrodeou aquele negócio ali pra poder pegar o que a véia tava querendo; Pô vei, num fique de brincadeirinha com a minha cara não viu que esse boy tava de ideia errada pra cima de mim)"
+                case "sudeste":
+                    return "(Po, meu, eu tava passando no Ibira e vi um carro muito maneiro; Mano, cê não vai acreditar no que aconteceu comigo ontem enquanto eu tomava uma breja; Cê precisava ver ontem como o Ga tava pistola da vida)"
+                case "centro-oeste":
+                    return "(Aquele borracho não deu conta do perrengue da mãe e acabou arruinando tudo; Depois de anos, aquele pé-de-boi conseguiu abiscoitar o dinheiro que precisava; Aquele patife não pagou o bereré de tanto que come na gaveta, ele é muito pão duro)"
+                case "sul":
+                    return "(Bah, tchê, lá no sul a vida é daquele jeito, bem de boa, com um chimarrão na mão e o mate cevado; A gente se encontra naquele rancho, com um baita de um assado, e a prosa rola solta até altas horas da noite; Os piás correndo de um lado pro outro, com o chimarrão numa mão e a bergamota noutra.)"
+            } 
         }
 
         // Evento para escutar a mudança no checkbox
